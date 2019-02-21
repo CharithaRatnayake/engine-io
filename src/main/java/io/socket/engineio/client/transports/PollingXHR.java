@@ -3,6 +3,7 @@ package io.socket.engineio.client.transports;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -173,7 +174,11 @@ public class PollingXHR extends Polling {
             okhttp3.Request.Builder requestBuilder = new okhttp3.Request.Builder();
             for (Map.Entry<String, List<String>> header : headers.entrySet()) {
                 for (String v : header.getValue()){
-                    requestBuilder.addHeader(header.getKey(), v);
+                    try{
+                        requestBuilder.addHeader(header.getKey(), v);
+                    }catch (IllegalArgumentException e){
+                            requestBuilder.addHeader(header.getKey(), "");
+                    }
                 }
             }
             okhttp3.Request request = requestBuilder
